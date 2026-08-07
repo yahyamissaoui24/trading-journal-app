@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum AssetClass {
+  STOCKS
+  INDICES
+  FOREX
+  CRYPTO
+  COMMODITIES
+  FUTURES
+}
+
+enum Direction {
+  LONG
+  SHORT
+}
+
+enum PaymentStatus {
+  WAITING
+  CONFIRMING
+  CONFIRMED
+  FINISHED
+  FAILED
+  EXPIRED
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String?   // optional — OAuth users (Google/Apple) have no password
+  name         String?
+  image        String?
+  createdAt    DateTime  @default(now())
+
+  premiumUntil DateTime? // rolling expiry, extended by each confirmed crypto payment. null/past = Free, future = Premium.
+
+  trades   Trade[]
+  payments Payment[]
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  provider        String        @default("nowpayments")
+  paymentId       String        @unique // NOWPayments payment_id
+  orderId         String        @unique // our own reference, sent to NOWPayments as order_id
+  status          PaymentStatus @default(WAITING)
+  priceAmount     Float
+  priceCurrency   String        @default("usd")
+  payCurrency     String?       // e.g. "btc", "eth", "usdttrc20"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Trade {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  assetClass AssetClass
+  symbol     String
+  direction  Direction
+  entryPrice Float
+  exitPrice  Float?
+  size       Float
+  stopLoss   Float?
+  takeProfit Float?
+  session    String? // Asian/London/NewYork — Forex & Indices
+  openedAt   DateTime
+  closedAt   DateTime?
+
+  pnl         Float? // realized P&L, computed server-side on create/update
+  rating      Int? // 1-5 star execution rating
+  notes       String?
+  tags        String[] @default([])
+  screenshots String[] @default([]) // data URLs for now — Free tier capped in app logic
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, openedAt])
+}

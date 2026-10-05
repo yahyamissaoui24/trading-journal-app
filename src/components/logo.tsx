@@ -25,7 +25,7 @@ export function LogoWithWordmark({ size = 32, href }: { size?: number; href?: st
 
   if (href) {
     return (
-      <Link href={href} className="hover:opacity-90 transition-opacity">
+      <Link href={href} className="hover:opacity-90 transition-opacity duration-200 cursor-pointer">
         {content}
       </Link>
     );

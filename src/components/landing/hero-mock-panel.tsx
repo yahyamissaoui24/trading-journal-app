@@ -27,11 +27,9 @@ function MiniStars({ count }: { count: number }) {
 export function HeroMockPanel() {
   return (
     <div className="relative">
-      {/* soft ambient glow behind the panel */}
       <div className="absolute -inset-8 bg-primary/10 blur-3xl rounded-full pointer-events-none" />
 
       <div className="relative bg-surface-container-low border border-surface-container-high rounded-lg shadow-modal overflow-hidden">
-        {/* window chrome */}
         <div className="flex items-center gap-1.5 px-stack-md py-2.5 border-b border-surface-container-high">
           <span className="h-2.5 w-2.5 rounded-full bg-secondary/60" />
           <span className="h-2.5 w-2.5 rounded-full bg-tertiary/60" />

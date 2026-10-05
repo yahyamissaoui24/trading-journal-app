@@ -1,11 +1,12 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Card, BTN_PREMIUM } from "@/components/ui-atoms";
 
-export default function SettingsPage() {
+function SettingsContent() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const justUpgraded = searchParams.get("upgraded") === "true";
@@ -58,5 +59,13 @@ export default function SettingsPage() {
         )}
       </Card>
     </div>
+  );
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={null}>
+      <SettingsContent />
+    </Suspense>
   );
 }

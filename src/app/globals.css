@@ -24,7 +24,6 @@ body {
   background: rgba(75, 226, 119, 0.25);
 }
 
-/* Data-dense scanning: monospace figures always tabular */
 .font-mono,
 .data-figure {
   font-variant-numeric: tabular-nums;

@@ -1,9 +1,11 @@
 // Shared button styles — outlined "pill" look (tinted background, soft border, colored text)
 // used consistently for every primary action button and every Premium/upgrade button.
 export const BTN_PRIMARY =
-  "inline-flex items-center justify-center gap-1.5 rounded-md bg-primary/10 border border-primary/30 px-stack-lg py-2 text-body-md font-medium text-primary hover:bg-primary/15 transition-colors";
+  "inline-flex items-center justify-center gap-1.5 rounded-md bg-primary/12 border border-primary/25 px-stack-lg py-2.5 text-body-md font-medium text-primary hover:bg-primary/18 hover:border-primary/35 transition-colors duration-200 cursor-pointer";
 export const BTN_PREMIUM =
-  "inline-flex items-center justify-center gap-1.5 rounded-md bg-tertiary/10 border border-tertiary/30 px-stack-lg py-2 text-body-md font-medium text-tertiary hover:bg-tertiary/15 transition-colors";
+  "inline-flex items-center justify-center gap-1.5 rounded-md bg-tertiary/10 border border-tertiary/25 px-stack-lg py-2.5 text-body-md font-medium text-tertiary hover:bg-tertiary/16 hover:border-tertiary/35 transition-colors duration-200 cursor-pointer";
+export const BTN_GHOST =
+  "inline-flex items-center justify-center gap-1.5 rounded-md border border-surface-container-high px-stack-lg py-2.5 text-body-md text-on-surface hover:bg-surface-container hover:border-outline-variant transition-colors duration-200 cursor-pointer";
 
 export function StarRating({
   value,

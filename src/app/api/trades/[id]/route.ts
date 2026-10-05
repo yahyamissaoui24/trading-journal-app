@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -11,21 +11,23 @@ async function getOwnedTrade(id: string, userId: string) {
   return trade;
 }
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const trade = await getOwnedTrade(params.id, session.user.id);
+  const trade = await getOwnedTrade(id, session.user.id);
   if (!trade) return NextResponse.json({ error: "Trade not found." }, { status: 404 });
 
   return NextResponse.json({ trade });
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const existing = await getOwnedTrade(params.id, session.user.id);
+  const existing = await getOwnedTrade(id, session.user.id);
   if (!existing) return NextResponse.json({ error: "Trade not found." }, { status: 404 });
 
   const body = await req.json();
@@ -52,7 +54,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   }
 
   const trade = await prisma.trade.update({
-    where: { id: params.id },
+    where: { id: id },
     data: {
       ...body,
       openedAt: body.openedAt ? new Date(body.openedAt) : undefined,
@@ -64,14 +66,15 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   return NextResponse.json({ trade });
 }
 
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const existing = await getOwnedTrade(params.id, session.user.id);
+  const existing = await getOwnedTrade(id, session.user.id);
   if (!existing) return NextResponse.json({ error: "Trade not found." }, { status: 404 });
 
-  await prisma.trade.delete({ where: { id: params.id } });
+  await prisma.trade.delete({ where: { id: id } });
 
   return NextResponse.json({ success: true });
 }
